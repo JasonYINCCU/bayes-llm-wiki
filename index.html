@@ -291,4 +291,843 @@
       margin-bottom: 6px;
     }
 
-    .
+    .slider-box input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+    }
+
+    .dot-grid {
+      display: grid;
+      grid-template-columns: repeat(50, 1fr);
+      gap: 2px;
+      background: #f8fafc;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .dot {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 2px;
+      background: #cbd5e1;
+    }
+
+    .dot.tp { background: #dc2626; } /* True Positive */
+    .dot.fn { background: #fca5a5; } /* False Negative */
+    .dot.fp { background: #f59e0b; } /* False Positive */
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      font-size: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    /* Interactive Lab 2: Monty Hall */
+    .doors-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin: 8px 0;
+    }
+
+    .door-btn {
+      background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+      color: white;
+      border: 3px solid #1e40af;
+      border-radius: 16px;
+      padding: 24px 16px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .door-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .door-btn.selected {
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.35);
+    }
+
+    .door-btn.opened {
+      background: #e2e8f0;
+      color: #475569;
+      border-color: #cbd5e1;
+    }
+
+    .door-btn.winner {
+      background: linear-gradient(180deg, #10b981, #059669);
+      border-color: #047857;
+      color: white;
+    }
+
+    .action-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .action-btn:hover { background: var(--primary-dark); }
+    .action-btn.secondary { background: #475569; }
+    .action-btn.secondary:hover { background: #334155; }
+    .action-btn.accent { background: var(--accent); }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--bg);
+      font-weight: 700;
+    }
+
+    /* Footer Controls */
+    .controls {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border);
+      padding: 12px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .nav-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .nav-btn {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .slide-counter {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 820px) {
+      .grid-2, .grid-4, .sim-controls { grid-template-columns: 1fr; }
+      .slide { padding: 24px 20px; }
+      .hero h1 { font-size: 1.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <main class="stage">
+
+    <!-- SLIDE 1: TITLE -->
+    <section class="slide active">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <span class="wiki-badge">📚 Knowledge Base: wiki/index.md (5 Sources Ingested)</span>
+        </div>
+        <span class="wiki-badge">KO / EN Bilingual Edition</span>
+      </div>
+      <div class="slide-body hero">
+        <div class="hero-tag">Interactive Mathematics Lecture · 확률과 직관의 과학</div>
+        <h1>베이즈 정리 (Bayes' Theorem)</h1>
+        <h2>증거가 주어졌을 때, 우리의 믿음을 수학적으로 업데이트하는 법<br>How to Mathematically Update Your Beliefs When New Evidence Arrives</h2>
+        <div class="grid-4" style="text-align: left; margin-top: 12px;">
+          <div class="card">
+            <h3>1. 조건부 확률</h3>
+            <p>표본공간 축소와 전확률의 법칙<span class="en-text">Conditional Probability</span></p>
+          </div>
+          <div class="card">
+            <h3>2. 베이즈 공식</h3>
+            <p>사전확률과 사후확률의 4대 구조<span class="en-text">Prior to Posterior</span></p>
+          </div>
+          <div class="card">
+            <h3>3. 직관의 함정</h3>
+            <p>기저율 오류와 자연빈도 시각화<span class="en-text">Base Rate Fallacy</span></p>
+          </div>
+          <div class="card">
+            <h3>4. 실전 시뮬레이션</h3>
+            <p>희귀병 진단·몬티홀·스팸 필터<span class="en-text">Interactive Labs</span></p>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; font-size: 0.85rem; color: var(--muted);">
+        키보드 방향키 (← / →) 또는 하단 버튼을 눌러 강의를 시작하세요.
+      </div>
+    </section>
+
+    <!-- SLIDE 2: INTUITION HOOK -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>왜 베이즈 정리를 배워야 할까?</h1>
+          <div class="en-sub">Why Bayes' Theorem? A Paradox That Breaks Human Intuition</div>
+        </div>
+        <span class="wiki-badge">📄 wiki/03-base-rate-fallacy.md · [S2][S3]</span>
+      </div>
+      <div class="slide-body">
+        <div class="callout warn">
+          <strong>🏥 의학 진단 퀴즈 (Medical Diagnosis Quiz):</strong><br>
+          전체 인구의 <strong>1%</strong>가 걸리는 희귀병이 있습니다. 정확도가 <strong>90%</strong>인 검사 키트(환자의 90%를 양성 판정, 건강한 사람의 10%를 오진)로 검사해 <strong>양성(+)</strong>이 나왔습니다.<br>
+          당신이 실제로 이 병에 걸렸을 확률은 몇 %일까요?
+          <span class="en-text">Prevalence = 1%, Sensitivity = 90%, False Positive = 10%. If you test positive, what is P(Disease | +)?</span>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>❌ 흔한 직관적 오답 (Intuitive Guess)</h3>
+            <p><strong>"검사 정확도가 90%니까, 병에 걸렸을 확률도 약 90% 아닐까?"</strong></p>
+            <p style="margin-top: 8px;">사람들은 '병이 1%로 매우 드물다'는 배경 정보(기저율)를 무시하고 검사 정확도 숫자에만 집중합니다.</p>
+            <span class="en-text">Most people confuse P(+ | Disease) = 90% with P(Disease | +).</span>
+          </div>
+          <div class="card" style="border-color: var(--primary); background: var(--primary-light);">
+            <h3>✅ 베이즈 정리의 정답 (Bayesian Answer)</h3>
+            <p style="font-size: 1.5rem; font-weight: 900; color: var(--primary-dark); margin: 6px 0;">단 8.33% (12명 중 1명)</p>
+            <p>양성 판정을 받은 사람 10명 중 9명 이상은 <strong>건강한 사람의 오진</strong>입니다. 베이즈 정리는 이 숨겨진 함정을 정확히 계산해 냅니다.</p>
+            <span class="en-text">Over 91% of positive results are false alarms!</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3: CONDITIONAL PROBABILITY -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>1단계: 조건부 확률과 전확률의 법칙</h1>
+          <div class="en-sub">Step 1: Conditional Probability & Law of Total Probability</div>
+        </div>
+        <span class="wiki-badge">📄 wiki/01-conditional-prob.md</span>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card">
+            <h3>🔍 조건부 확률 (Conditional Probability)</h3>
+            <p>사건 <strong>B가 이미 발생했다는 정보</strong>가 주어졌을 때, 사건 A가 일어날 확률입니다. 직관적으로 <strong>전체 세상을 B라는 좁은 공간으로 축소</strong>하는 것입니다.</p>
+            <span class="en-text">Shrinking the sample space from Ω down to event B.</span>
+            <div class="formula-box" style="margin-top: 14px; font-size: 1.15rem;">
+              P(A | B) = <span class="frac"><span class="num">P(A ∩ B)</span><span class="den">P(B)</span></span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>🧩 전확률의 법칙 (Law of Total Probability)</h3>
+            <p>결과 B가 일어나는 전체 확률은, 원인 <strong>A가 참일 때의 경로</strong>와 <strong>A가 거짓(A<sup>c</sup>)일 때의 경로</strong>를 모두 합친 것입니다.</p>
+            <span class="en-text">Summing probabilities across all mutually exclusive causes.</span>
+            <div class="formula-box" style="margin-top: 14px; font-size: 1.05rem;">
+              P(B) = P(B | A)P(A) + P(B | A<sup>c</sup>)P(A<sup>c</sup>)
+            </div>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>핵심 연결고리 (Multiplication Rule):</strong> 교집합 P(A ∩ B)는 <code>P(B | A)P(A)</code>로도, <code>P(A | B)P(B)</code>로도 쓸 수 있습니다. 이 두 식을 같다고 놓으면 곧바로 <strong>베이즈 정리</strong>가 탄생합니다!
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4: BAYES FORMULA & 4 COMPONENTS -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>2단계: 베이즈 정리 공식과 4대 핵심 요소</h1>
+          <div class="en-sub">Step 2: Bayes' Theorem Formula & Its 4 Building Blocks</div>
+        </div>
+        <span class="wiki-badge">📄 wiki/02-bayes-theorem.md · [S1]</span>
+      </div>
+      <div class="slide-body">
+        <div class="formula-box">
+          <span class="c-post">P(H | E)</span> = 
+          <span class="frac">
+            <span class="num"><span class="c-like">P(E | H)</span> · <span class="c-prior">P(H)</span></span>
+            <span class="den"><span class="c-marg">P(E)</span></span>
+          </span>
+        </div>
+        <div class="grid-4">
+          <div class="card" style="border-top: 4px solid #10b981;">
+            <h3>1. 사전확률 (Prior)</h3>
+            <p><strong>P(H)</strong></p>
+            <p style="margin-top: 6px;">증거 E를 보기 전, 가설 H가 참일 것이라는 초기 믿음</p>
+            <span class="en-text">Initial belief before evidence</span>
+          </div>
+          <div class="card" style="border-top: 4px solid #8b5cf6;">
+            <h3>2. 가능도 (Likelihood)</h3>
+            <p><strong>P(E | H)</strong></p>
+            <p style="margin-top: 6px;">가설 H가 참이라고 가정할 때, 증거 E가 관측될 확률</p>
+            <span class="en-text">Support from the new data</span>
+          </div>
+          <div class="card" style="border-top: 4px solid #f59e0b;">
+            <h3>3. 주변확률 (Marginal)</h3>
+            <p><strong>P(E)</strong></p>
+            <p style="margin-top: 6px;">가설의 참·거짓과 무관하게 증거 E가 나타날 전체 확률</p>
+            <span class="en-text">Normalizing constant</span>
+          </div>
+          <div class="card" style="border-top: 4px solid #0284c7;">
+            <h3>4. 사후확률 (Posterior)</h3>
+            <p><strong>P(H | E)</strong></p>
+            <p style="margin-top: 6px;">증거 E를 반영해 새롭게 업데이트된 최종 확률</p>
+            <span class="en-text">Updated belief after evidence</span>
+          </div>
+        </div>
+        <div class="callout success">
+          <strong>한 줄 요약:</strong> <code>사후 믿음(Posterior) ∝ 데이터의 지지(Likelihood) × 기존 믿음(Prior)</code> — 기존 상식과 새로운 데이터를 균형 있게 결합하는 규칙입니다.
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5: BASE RATE FALLACY & NATURAL FREQUENCY -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>3단계: 기저율 오류와 자연빈도 해결법</h1>
+          <div class="en-sub">Step 3: Base Rate Fallacy & Natural Frequency Format</div>
+        </div>
+        <span class="wiki-badge">📄 wiki/03-base-rate-fallacy.md · [S2][S3]</span>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card">
+            <h3>⚠️ 두 가지 치명적 인지 함정</h3>
+            <ul style="padding-left: 18px; margin-top: 8px;">
+              <li><strong>기저율 오류 (Base Rate Fallacy) [S2]:</strong> 전체 모집단의 기본 비율(Prior)을 무시하고 눈앞의 단편적 증거에만 매몰되는 현상</li>
+              <li style="margin-top: 10px;"><strong>역확률 혼동 (Inverse Confusion):</strong> <code>P(H | E) ≠ P(E | H)</code>임에도 두 조건의 방향을 같다고 착각하는 오류</li>
+            </ul>
+            <span class="en-text">"Probability of testing positive given disease" ≠ "Probability of having disease given positive test"</span>
+          </div>
+          <div class="card" style="background: var(--accent-light); border-color: #ddd6fe;">
+            <h3>💡 교육적 해법: 자연빈도법 [S3]</h3>
+            <p>심리학자 <strong>기거렌처(Gigerenzer, 1995)</strong>는 추상적인 백분율(%) 대신 <strong>"1,000명 중 몇 명"</strong>이라는 자연수(Natural Frequency)로 바꾸면 비전공자의 추론 정답률이 <strong>15% → 50% 이상</strong>으로 급상승함을 입증했습니다.</p>
+            <span class="en-text">Replacing percentages with concrete counts out of 1,000 people makes Bayesian math visually transparent.</span>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>집단 구분 (Group)</th>
+              <th>전체 1,000명 중 인원</th>
+              <th>양성 판정 (+)</th>
+              <th>음성 판정 (-)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>실제 환자 (D, 유병률 1%)</strong></td>
+              <td>10명</td>
+              <td style="color: var(--danger); font-weight: 800;">9명 (진짜 양성 · TP)</td>
+              <td>1명 (놓친 환자 · FN)</td>
+            </tr>
+            <tr>
+              <td><strong>건강한 사람 (D<sup>c</sup>, 99%)</strong></td>
+              <td>990명</td>
+              <td style="color: var(--warning); font-weight: 800;">99명 (가짜 양성 · FP)</td>
+              <td>891명 (정상 음성 · TN)</td>
+            </tr>
+            <tr style="background: var(--primary-light); font-weight: 700;">
+              <td>합계 (Total)</td>
+              <td>1,000명</td>
+              <td>108명 → 실제 환자 비율 = 9 / 108 = 8.33%</td>
+              <td>892명</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SLIDE 6: INTERACTIVE LAB 1 (RARE DISEASE) -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>실습 1: 희귀병 진단 자연빈도 시뮬레이터</h1>
+          <div class="en-sub">Interactive Lab 1: 1,000-Person Natural Frequency Simulator</div>
+        </div>
+        <span class="wiki-badge">📄 wiki/04-classic-cases.md · [S3]</span>
+      </div>
+      <div class="slide-body">
+        <div class="sim-controls">
+          <div class="slider-box">
+            <label><span>유병률 Prior P(D)</span><span id="prevVal">1.0% (10명)</span></label>
+            <input type="range" id="prevSlider" min="0.5" max="20" step="0.5" value="1">
+          </div>
+          <div class="slider-box">
+            <label><span>민감도 P(+|D)</span><span id="sensVal">90%</span></label>
+            <input type="range" id="sensSlider" min="50" max="100" step="1" value="90">
+          </div>
+          <div class="slider-box">
+            <label><span>위양성률 P(+|D<sup>c</sup>)</span><span id="fpVal">10%</span></label>
+            <input type="range" id="fpSlider" min="1" max="30" step="1" value="10">
+          </div>
+        </div>
+
+        <div class="dot-grid" id="dotGrid"></div>
+
+        <div class="legend">
+          <span><i class="swatch" style="background:#dc2626;"></i> 진짜 양성 TP (<b id="tpCount">9</b>명)</span>
+          <span><i class="swatch" style="background:#fca5a5;"></i> 위음성 FN (<b id="fnCount">1</b>명)</span>
+          <span><i class="swatch" style="background:#f59e0b;"></i> 가짜 양성 FP (<b id="fpCount">99</b>명)</span>
+          <span><i class="swatch" style="background:#cbd5e1;"></i> 정상 음성 TN (<b id="tnCount">891</b>명)</span>
+        </div>
+
+        <div class="callout success" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <strong>사후확률 계산 결과 P(D | +):</strong> 전체 양성 <span id="totalPos">108</span>명 중 실제 환자는 <span id="tpText">9</span>명입니다.
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 900; color: var(--primary-dark);" id="postResult">
+            8.33%
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7: INTERACTIVE LAB 2 (MONTY HALL) -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>실습 2: 몬티홀 문제 (Monty Hall Problem)</h1>
+          <div class="en-sub">Interactive Lab 2: How New Information Shifts Odds from 1/3 to 2/3</div>
+        </div>
+        <span class="wiki-badge">📄 wiki/04-classic-cases.md · [S4]</span>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div>
+            <p style="font-size: 0.92rem; margin-bottom: 10px;" id="montyPrompt">
+              <strong>1단계:</strong> 3개의 문 중 하나 뒤에 자동차(🚗)가 있습니다. 문을 하나 선택하세요!
+            </p>
+            <div class="doors-row">
+              <button class="door-btn" id="door0" onclick="pickDoor(0)">🚪<br>Door 1</button>
+              <button class="door-btn" id="door1" onclick="pickDoor(1)">🚪<br>Door 2</button>
+              <button class="door-btn" id="door2" onclick="pickDoor(2)">🚪<br>Door 3</button>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;" id="montyControls">
+              <button class="action-btn secondary" onclick="resetMonty()">새 게임 (Reset)</button>
+              <button class="action-btn accent" onclick="simulateMonty100()">⚡ 100회 자동 시뮬레이션</button>
+            </div>
+            <div class="card" style="margin-top: 12px; padding: 12px 16px;">
+              <strong>누적 실험 결과 (Empirical Win Rate):</strong><br>
+              <span style="font-size: 0.88rem;">
+                유지(Stay) 승률: <b id="stayStat">0 / 0 (0%)</b> &nbsp;|&nbsp; 
+                변경(Switch) 승률: <b id="switchStat" style="color: var(--success);">0 / 0 (0%)</b>
+              </span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>🧮 베이즈 업데이트 증명 (1번 선택, 사회자가 3번 오픈)</h3>
+            <ul style="padding-left: 18px; margin-top: 8px;">
+              <li><strong>사전확률:</strong> P(C<sub>1</sub>) = P(C<sub>2</sub>) = P(C<sub>3</sub>) = <strong>1/3</strong></li>
+              <li><strong>사회자 행동 우도 P(H<sub>3</sub> | C<sub>i</sub>):</strong>
+                <br>- 차가 1번에 있으면(C<sub>1</sub>): 2·3번 중 무작위 오픈 → <strong>1/2</strong>
+                <br>- 차가 2번에 있으면(C<sub>2</sub>): 2번을 못 여므로 3번 오픈 → <strong>1</strong>
+                <br>- 차가 3번에 있으면(C<sub>3</sub>): 3번을 열 수 없음 → <strong>0</strong>
+              </li>
+            </ul>
+            <div class="formula-box" style="margin-top: 12px; font-size: 1rem; padding: 14px;">
+              P(C<sub>2</sub> | H<sub>3</sub>) = <span class="frac"><span class="num">1 · (1/3)</span><span class="den">(1/2)(1/3) + 1(1/3) + 0</span></span> = <span class="c-post">2/3 (66.7%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8: NAIVE BAYES SPAM FILTER -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>실전 응용: 나이브 베이즈 스팸 필터</h1>
+          <div class="en-sub">Real-World AI Application: Naive Bayes Spam Classifier</div>
+        </div>
+        <span class="wiki-badge">📄 wiki/05-applications.md · [S5]</span>
+      </div>
+      <div class="slide-body">
+        <div class="grid-2">
+          <div class="card">
+            <h3>📧 스팸 필터의 작동 원리 (Paul Graham, 2002)</h3>
+            <p>이메일에 특정 키워드(예: <code>"무료 당첨"</code>)가 등장했을 때, 그 메일이 스팸일 사후확률을 계산합니다.</p>
+            <div class="formula-box" style="margin: 12px 0; font-size: 0.95rem; padding: 14px;">
+              P(Spam | Word) = <span class="frac"><span class="num">P(Word | Spam) · P(Spam)</span><span class="den">P(Word)</span></span>
+            </div>
+            <p><strong>왜 '순진한(Naive)' 베이즈인가?</strong> 문장 내 모든 단어가 서로 독립적으로 등장한다고 가정해 수백만 건의 메일을 0.001초 만에 분류합니다.</p>
+            <span class="en-text">Conditional independence assumption enables ultra-fast real-time filtering.</span>
+          </div>
+
+          <div class="card" style="background: var(--primary-light); border-color: #bfdbfe;">
+            <h3>🧪 실시간 스팸 확률 계산기 (클릭해 보세요)</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 10px;">기본 스팸 비율 P(Spam) = 40%일 때, 메일 제목에 포함된 단어를 토글하세요:</p>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
+              <label style="background:white; padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer; font-size:0.85rem; font-weight:700;">
+                <input type="checkbox" id="wFree" checked onchange="calcSpam()"> "무료/Free" 포함
+              </label>
+              <label style="background:white; padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer; font-size:0.85rem; font-weight:700;">
+                <input type="checkbox" id="wWin" onchange="calcSpam()"> "당첨/Prize" 포함
+              </label>
+              <label style="background:white; padding:8px 12px; border-radius:8px; border:1px solid var(--border); cursor:pointer; font-size:0.85rem; font-weight:700;">
+                <input type="checkbox" id="wMeeting" onchange="calcSpam()"> "회의록/Meeting" 포함
+              </label>
+            </div>
+            <div class="callout" style="background: white;">
+              계산된 스팸 사후확률 <strong>P(Spam | Words)</strong>:
+              <div style="font-size: 1.8rem; font-weight: 900; color: var(--danger); margin-top: 4px;" id="spamProb">88.9% (스팸 분류 🚨)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9: SUMMARY & WIKI MAPPING -->
+    <section class="slide">
+      <div class="slide-header">
+        <div class="slide-title-group">
+          <h1>요약 및 LLM Wiki 지식 맵 대응표</h1>
+          <div class="en-sub">Summary & Traceability Matrix (Wiki ↔ Presentation)</div>
+        </div>
+        <span class="wiki-badge">📚 Complete Knowledge Alignment</span>
+      </div>
+      <div class="slide-body">
+        <table>
+          <thead>
+            <tr>
+              <th>슬라이드</th>
+              <th>핵심 학습 목표</th>
+              <th>연결된 LLM Wiki 문서</th>
+              <th>참고 문헌 (Sources)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Slide 2 & 5</strong></td>
+              <td>직관의 오류(기저율 오류)와 자연빈도 해결책</td>
+              <td><code>wiki/03-base-rate-fallacy.md</code></td>
+              <td>[S2] Kahneman & Tversky (1973)<br>[S3] Gigerenzer & Hoffrage (1995)</td>
+            </tr>
+            <tr>
+              <td><strong>Slide 3</strong></td>
+              <td>표본공간 축소와 전확률의 법칙</td>
+              <td><code>wiki/01-conditional-prob.md</code></td>
+              <td>기초 확률론 공리</td>
+            </tr>
+            <tr>
+              <td><strong>Slide 4</strong></td>
+              <td>베이즈 공식과 4대 요소(사전·가능도·주변·사후)</td>
+              <td><code>wiki/02-bayes-theorem.md</code></td>
+              <td>[S1] Bayes & Price (1763)</td>
+            </tr>
+            <tr>
+              <td><strong>Slide 6 & 7</strong></td>
+              <td>희귀병 진단 시뮬레이터 & 몬티홀 베이즈 증명</td>
+              <td><code>wiki/04-classic-cases.md</code></td>
+              <td>[S3] Gigerenzer (1995)<br>[S4] Selvin (1975) / vos Savant (1990)</td>
+            </tr>
+            <tr>
+              <td><strong>Slide 8</strong></td>
+              <td>나이브 베이즈 스팸 필터와 실시간 추론</td>
+              <td><code>wiki/05-applications.md</code></td>
+              <td>[S5] Paul Graham (2002)</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="callout success">
+          <strong>핵심 메시지 (Takeaway):</strong> 베이즈 정리는 단순한 공식이 아니라, <strong>기존의 배경지식(Prior)을 존중하면서 새로운 증거(Evidence)가 들어올 때마다 합리적으로 생각을 수정하는 과학적 사고법</strong>입니다.
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="controls">
+    <div class="slide-counter" id="slideCounter">Slide 1 / 9</div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← 이전 (Prev)</button>
+      <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">다음 (Next) →</button>
+    </div>
+  </footer>
+
+  <script>
+    /* --- Slide Navigation --- */
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+    const slideCounter = document.getElementById('slideCounter');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    function updateSlideUI() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlide);
+      });
+      const pct = ((currentSlide + 1) / slides.length) * 100;
+      progressBar.style.width = pct + '%';
+      slideCounter.textContent = `Slide ${currentSlide + 1} / ${slides.length}`;
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === slides.length - 1;
+    }
+
+    function changeSlide(dir) {
+      const next = currentSlide + dir;
+      if (next >= 0 && next < slides.length) {
+        currentSlide = next;
+        updateSlideUI();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') changeSlide(1);
+      if (e.key === 'ArrowLeft') changeSlide(-1);
+    });
+
+    /* --- Lab 1: Rare Disease Simulator --- */
+    const prevSlider = document.getElementById('prevSlider');
+    const sensSlider = document.getElementById('sensSlider');
+    const fpSlider = document.getElementById('fpSlider');
+    const dotGrid = document.getElementById('dotGrid');
+
+    function renderDiseaseSim() {
+      const prevPct = parseFloat(prevSlider.value);
+      const sensPct = parseFloat(sensSlider.value);
+      const fpPct = parseFloat(fpSlider.value);
+
+      const total = 1000;
+      const sick = Math.round((prevPct / 100) * total);
+      const healthy = total - sick;
+
+      const tp = Math.round((sensPct / 100) * sick);
+      const fn = sick - tp;
+      const fp = Math.round((fpPct / 100) * healthy);
+      const tn = healthy - fp;
+
+      document.getElementById('prevVal').textContent = `${prevPct.toFixed(1)}% (${sick}명)`;
+      document.getElementById('sensVal').textContent = `${sensPct}%`;
+      document.getElementById('fpVal').textContent = `${fpPct}%`;
+
+      document.getElementById('tpCount').textContent = tp;
+      document.getElementById('fnCount').textContent = fn;
+      document.getElementById('fpCount').textContent = fp;
+      document.getElementById('tnCount').textContent = tn;
+
+      const totalPos = tp + fp;
+      const posterior = totalPos > 0 ? ((tp / totalPos) * 100).toFixed(2) : '0.00';
+
+      document.getElementById('totalPos').textContent = totalPos;
+      document.getElementById('tpText').textContent = tp;
+      document.getElementById('postResult').textContent = `${posterior}%`;
+
+      // Render 1000 dots
+      dotGrid.innerHTML = '';
+      const frag = document.createDocumentFragment();
+      for (let i = 0; i < tp; i++) frag.appendChild(makeDot('tp'));
+      for (let i = 0; i < fn; i++) frag.appendChild(makeDot('fn'));
+      for (let i = 0; i < fp; i++) frag.appendChild(makeDot('fp'));
+      for (let i = 0; i < tn; i++) frag.appendChild(makeDot(''));
+      dotGrid.appendChild(frag);
+    }
+
+    function makeDot(cls) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (cls ? ' ' + cls : '');
+      return d;
+    }
+
+    prevSlider.addEventListener('input', renderDiseaseSim);
+    sensSlider.addEventListener('input', renderDiseaseSim);
+    fpSlider.addEventListener('input', renderDiseaseSim);
+    renderDiseaseSim();
+
+    /* --- Lab 2: Monty Hall Simulator --- */
+    let carDoor = 0;
+    let pickedDoor = null;
+    let openedDoor = null;
+    let gamePhase = 'pick'; // 'pick' | 'decide' | 'done'
+    let stats = { stayWins: 0, stayTotal: 0, switchWins: 0, switchTotal: 0 };
+
+    function resetMonty() {
+      carDoor = Math.floor(Math.random() * 3);
+      pickedDoor = null;
+      openedDoor = null;
+      gamePhase = 'pick';
+      document.getElementById('montyPrompt').innerHTML =
+        '<strong>1단계:</strong> 3개의 문 중 하나 뒤에 자동차(🚗)가 있습니다. 문을 하나 선택하세요!';
+      for (let i = 0; i < 3; i++) {
+        const btn = document.getElementById('door' + i);
+        btn.className = 'door-btn';
+        btn.disabled = false;
+        btn.innerHTML = `🚪<br>Door ${i + 1}`;
+      }
+      document.getElementById('montyControls').innerHTML = `
+        <button class="action-btn secondary" onclick="resetMonty()">새 게임 (Reset)</button>
+        <button class="action-btn accent" onclick="simulateMonty100()">⚡ 100회 자동 시뮬레이션</button>
+      `;
+    }
+
+    function pickDoor(idx) {
+      if (gamePhase !== 'pick') return;
+      pickedDoor = idx;
+      gamePhase = 'decide';
+
+      // Host opens a goat door
+      const candidates = [0, 1, 2].filter(d => d !== pickedDoor && d !== carDoor);
+      openedDoor = candidates[Math.floor(Math.random() * candidates.length)];
+
+      document.getElementById('door' + pickedDoor).classList.add('selected');
+      const openBtn = document.getElementById('door' + openedDoor);
+      openBtn.classList.add('opened');
+      openBtn.disabled = true;
+      openBtn.innerHTML = `🐐<br>Door ${openedDoor + 1} (염소)`;
+
+      const otherDoor = [0, 1, 2].find(d => d !== pickedDoor && d !== openedDoor);
+      document.getElementById('montyPrompt').innerHTML =
+        `<strong>2단계:</strong> 사회자가 <b>Door ${openedDoor + 1}(염소)</b>를 열었습니다! <b>Door ${pickedDoor + 1}</b>을 유지할까요, <b>Door ${otherDoor + 1}</b>로 바꿀까요?`;
+
+      document.getElementById('montyControls').innerHTML = `
+        <button class="action-btn secondary" onclick="finishMonty(false)">유지하기 (Stay on Door ${pickedDoor + 1})</button>
+        <button class="action-btn" onclick="finishMonty(true)">바꾸기 (Switch to Door ${otherDoor + 1})</button>
+      `;
+    }
+
+    function finishMonty(doSwitch) {
+      if (gamePhase !== 'decide') return;
+      gamePhase = 'done';
+      const finalDoor = doSwitch
+        ? [0, 1, 2].find(d => d !== pickedDoor && d !== openedDoor)
+        : pickedDoor;
+
+      const won = finalDoor === carDoor;
+      if (doSwitch) {
+        stats.switchTotal++;
+        if (won) stats.switchWins++;
+      } else {
+        stats.stayTotal++;
+        if (won) stats.stayWins++;
+      }
+
+      for (let i = 0; i < 3; i++) {
+        const btn = document.getElementById('door' + i);
+        btn.disabled = true;
+        if (i === carDoor) {
+          btn.className = 'door-btn winner';
+          btn.innerHTML = `🚗<br>Door ${i + 1} (자동차!)`;
+        } else {
+          btn.className = 'door-btn opened';
+          btn.innerHTML = `🐐<br>Door ${i + 1} (염소)`;
+        }
+      }
+
+      document.getElementById('montyPrompt').innerHTML = won
+        ? `🎉 <strong>축하합니다! (${doSwitch ? '선택 변경' : '선택 유지'} 성공)</strong> 자동차를 획득했습니다!`
+        : `😅 <strong>아쉽네요! (${doSwitch ? '선택 변경' : '선택 유지'} 실패)</strong> 염소를 선택했습니다.`;
+
+      updateMontyStats();
+      document.getElementById('montyControls').innerHTML = `
+        <button class="action-btn" onclick="resetMonty()">다시 하기 (Play Again)</button>
+        <button class="action-btn accent" onclick="simulateMonty100()">⚡ 100회 자동 시뮬레이션</button>
+      `;
+    }
+
+    function simulateMonty100() {
+      for (let i = 0; i < 100; i++) {
+        const car = Math.floor(Math.random() * 3);
+        const pick = Math.floor(Math.random() * 3);
+        stats.stayTotal++;
+        if (pick === car) stats.stayWins++;
+        stats.switchTotal++;
+        if (pick !== car) stats.switchWins++;
+      }
+      updateMontyStats();
+    }
+
+    function updateMontyStats() {
+      const stayPct = stats.stayTotal ? ((stats.stayWins / stats.stayTotal) * 100).toFixed(1) : 0;
+      const switchPct = stats.switchTotal ? ((stats.switchWins / stats.switchTotal) * 100).toFixed(1) : 0;
+      document.getElementById('stayStat').textContent = `${stats.stayWins} / ${stats.stayTotal} (${stayPct}%)`;
+      document.getElementById('switchStat').textContent = `${stats.switchWins} / ${stats.switchTotal} (${switchPct}%)`;
+    }
+
+    /* --- Lab 3: Naive Bayes Spam Calculator --- */
+    function calcSpam() {
+      // Prior P(Spam) = 0.4, P(Ham) = 0.6
+      let pSpam = 0.4;
+      let pHam = 0.6;
+
+      // Likelihoods: [P(word|Spam), P(word|Ham)]
+      const words = [
+        { id: 'wFree', s: 0.60, h: 0.05 },
+        { id: 'wWin', s: 0.50, h: 0.02 },
+        { id: 'wMeeting', s: 0.03, h: 0.45 }
+      ];
+
+      words.forEach(w => {
+        if (document.getElementById(w.id).checked) {
+          pSpam *= w.s;
+          pHam *= w.h;
+        }
+      });
+
+      const postSpam = (pSpam / (pSpam + pHam)) * 100;
+      const label = postSpam >= 50 ? '스팸 분류 🚨' : '정상 메일 ✅';
+      const el = document.getElementById('spamProb');
+      el.textContent = `${postSpam.toFixed(1)}% (${label})`;
+      el.style.color = postSpam >= 50 ? 'var(--danger)' : 'var(--success)';
+    }
+
+    updateSlideUI();
+    calcSpam();
+  </script>
+</body>
+</html>
